@@ -46,12 +46,20 @@ Use the same `--model` (e.g. `gpt-4`, `gpt-4o`) for both if you want one model f
 
 **Multiple runs** — To keep separate runs in separate folders, pass **`--run <name>`** for both tasks. Each run writes to `output/<model>/solving/<name>/` and `output/<model>/assessment/<name>/`. Reruns with the same `--run` resume (skip existing files).
 
+Run both tasks for run_1, run_2, and run_3 in one command:
+
 ```bash
-# First run
+python scripts/run_multiple_runs.py --runs run_1 run_2 run_3 --model gpt-4
+```
+
+For each run label, this runs problem-solving then assessment (optional: `--limit N`). Or run tasks individually:
+
+```bash
+# Single run
 python scripts/run_problem_solving_eval.py --model gpt-4 --run run_1
 python scripts/run_assessment_eval.py --model gpt-4 --run run_1
 
-# Second run (different folder; can resume within each run by rerunning the same command)
+# Another run (resume by rerunning the same command)
 python scripts/run_problem_solving_eval.py --model gpt-4 --run run_2
 python scripts/run_assessment_eval.py --model gpt-4 --run run_2
 ```
