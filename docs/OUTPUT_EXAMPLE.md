@@ -1,6 +1,14 @@
 # Output layout and example
 
-Output lives under **`output/<model>/`** with one subfolder per task: **`solving/`** and **`assessment/`**.
+Generated results are organized under **`output/`** as:
+
+**`output/<model>/<task>/<split>/[<run>/]<id>.json`**
+
+- **&lt;model&gt;** — e.g. `gpt-4`, `gpt-4o` (deployment name).
+- **&lt;task&gt;** — `solving` or `assessment`.
+- **&lt;split&gt;** — dataset: `gsm8k`, `math`, `olympiadbench`, `omnimath`.
+- **&lt;run&gt;** — optional; e.g. `run_1`, `run_2`, `run_3` when using `--run`.
+- **&lt;id&gt;** — item id from the dataset (e.g. `gsm8k-0`, `math-92`).
 
 ---
 
@@ -8,18 +16,37 @@ Output lives under **`output/<model>/`** with one subfolder per task: **`solving
 
 ```
 output/
+  gpt-4/
+    solving/                    # Task 1: problem-solving
+      gsm8k/                   # split
+        run_1/
+          gsm8k-0.json
+          ...
+          summary.txt
+        run_2/
+          ...
+      math/
+        run_1/
+          math-0.json
+          math-1.json
+          ...
+          summary.txt
+      olympiadbench/
+      omnimath/
+    assessment/                 # Task 2: step-level assessment
+      gsm8k/
+        run_1/
+          gsm8k-0.json
+          ...
+          summary.txt
+      math/
+      ...
   gpt-4o/
-    solving/           # Task 1: problem-solving
-      gsm8k-0.json
-      gsm8k-1.json
-      ...
-      summary.txt
-      responses.json   # only if you ran run_solve_only.py (list of solution strings)
-    assessment/        # Task 2: step-level assessment
-      gsm8k-0.json
-      ...
-      summary.txt
+    solving/
+    assessment/
 ```
+
+Each run folder may also contain **`responses.json`** (solving only, if you used `run_solve_only.py`).
 
 ---
 

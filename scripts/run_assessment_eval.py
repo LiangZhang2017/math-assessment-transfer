@@ -36,18 +36,19 @@ def safe_filename(item_id: str) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Run assessment condition; one file per problem, rerun skips existing.")
     parser.add_argument("--limit", type=int, default=None, help="Run only first N items")
+    parser.add_argument("--split", type=str, default="gsm8k", help="Dataset split: gsm8k, math, olympiadbench, omnimath (default: gsm8k)")
     parser.add_argument("--model", type=str, default=None, help="Model deployment name (default: from .env)")
-    parser.add_argument("--run", type=str, default=None, help="Run label: save to output/<model>/assessment/<run>/ (e.g. --run run_1)")
+    parser.add_argument("--run", type=str, default=None, help="Run label: save to .../assessment/<split>/<run>/ (e.g. --run run_1)")
     parser.add_argument("--out-dir", type=str, default=None, help="Override output directory (default: output/<model>/assessment/ or .../assessment/<run>/)")
     args = parser.parse_args()
 
     model = args.model or config.AZURE_OPENAI_MODEL
-    base = ROOT / "output" / safe_dirname(model) / "assessment"
+    base = ROOT / "output" / safe_dirname(model) / "assessment" / args.split
     run_sub = safe_run_dir(args.run)
     out_dir = Path(args.out_dir) if args.out_dir else (base / run_sub if run_sub else base)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    dataset = load_processbench("gsm8k")
+    dataset = load_processbench(args.split)
     if args.limit:
         dataset = dataset[: args.limit]
     n = len(dataset)

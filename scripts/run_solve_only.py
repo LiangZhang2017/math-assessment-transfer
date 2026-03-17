@@ -34,15 +34,16 @@ def safe_filename(item_id: str) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Run LLM to solve each problem (no evaluation)")
     parser.add_argument("--limit", type=int, default=None, help="Run only first N items")
+    parser.add_argument("--split", type=str, default="gsm8k", help="Dataset split: gsm8k, math, olympiadbench, omnimath (default: gsm8k)")
     parser.add_argument("--model", type=str, default=None, help="Model deployment name (default: from .env)")
-    parser.add_argument("--out-dir", type=str, default=None, help="Output directory (default: output/<model>/solving/)")
+    parser.add_argument("--out-dir", type=str, default=None, help="Output directory (default: output/<model>/solving/<split>/)")
     args = parser.parse_args()
 
     model = args.model or config.AZURE_OPENAI_MODEL
-    out_dir = Path(args.out_dir) if args.out_dir else ROOT / "output" / safe_dirname(model) / "solving"
+    out_dir = Path(args.out_dir) if args.out_dir else ROOT / "output" / safe_dirname(model) / "solving" / args.split
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    dataset = load_processbench("gsm8k")
+    dataset = load_processbench(args.split)
     if args.limit:
         dataset = dataset[: args.limit]
     n = len(dataset)

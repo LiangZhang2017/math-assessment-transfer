@@ -44,8 +44,38 @@ Use the **exact deployment name** as in your Azure OpenAI resource:
 | Reasoning   | `o1`, `o1-mini`, `o3`, `o3-mini`, `o4-mini` | If available in your region. |
 | GPT-5       | e.g. `gpt-5` or as in Azure catalog | Depends on your Azure offering. |
 
-- Set **`AZURE_OPENAI_MODEL`** in `.env` for the default, or pass **`--model <name>`** to `scripts/run_problem_solving_eval.py`.
-- Names must match what you created in Azure (e.g. in Azure AI Studio → Deployments). If a model returns 404, check the deployment name and region/availability.
+- Set **`AZURE_OPENAI_MODEL`** in `.env` for the default, or pass **`--model <name>`** to the scripts.
+- Names must match **the deployment name you set** in Azure (Azure Portal → your Azure OpenAI resource → **Deployments**, or Azure AI Studio). If you get **404 DeploymentNotFound**, that name does not exist in your resource—create a deployment for the model you want and use that deployment’s name.
+
+### GPT-5–level models (example names)
+
+In Azure’s model catalog, GPT-5–series models are often referenced with identifiers such as:
+
+- **`gpt-5`** — full capability
+- **`gpt-5-tp`** — common org deployment name (throughput / TP variant)
+- **`gpt-5-mini`** — lighter / cheaper
+- **`gpt-5-nano`** — speed / low latency
+- **`gpt-5-chat`** — conversational
+- **`gpt-5.1`**, **`gpt-5.2`**, **`gpt-5.3`**, **`gpt-5.4`** — newer variants (if offered in your region)
+
+When you **create a deployment** in the Azure portal, you choose both the **model** (e.g. “gpt-5”) and a **deployment name**. The deployment name is what you pass to `--model` in this repo. You can name it `gpt-5` to match the examples below, or any other name (e.g. `my-gpt5`).
+
+**Example commands (use your actual deployment name, e.g. `gpt-5-tp` or `gpt-5`):**
+
+```bash
+# Solving with a GPT-5 deployment (e.g. gpt-5-tp in many orgs)
+python scripts/run_problem_solving_eval.py --split gsm8k --model gpt-5-tp --limit 5
+python scripts/run_problem_solving_eval.py --split math --model gpt-5-tp --limit 5
+
+# Full runs
+python scripts/run_problem_solving_eval.py --split gsm8k --model gpt-5-tp
+python scripts/run_problem_solving_eval.py --split math --model gpt-5-tp
+
+# Or set default in .env: AZURE_OPENAI_MODEL=gpt-5-tp
+python scripts/run_problem_solving_eval.py --split gsm8k
+```
+
+If **`gpt-5`** returns 404: in Azure AI Studio (or Portal) open your resource → **Deployments** → create a new deployment, select a GPT-5–series model if available in your region, and set the deployment name to `gpt-5` (or copy the exact name shown and use that with `--model`).
 
 ## Commands
 

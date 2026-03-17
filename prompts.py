@@ -46,9 +46,9 @@ A step should be considered erroneous if it contains one or more of the followin
 4. Completeness error: omission of a necessary condition, constraint, or justification that affects the validity of the step.
 
 Instructions:
-1. Read the problem carefully.
-2. Evaluate the solution strictly step by step, in order.
-3. For each step, judge whether it is valid based on the problem statement and the previously verified steps.
+1. You are given the full problem and all solution steps together. Use the entire context to evaluate.
+2. Read the problem carefully, then evaluate the solution strictly step by step, in order.
+3. For each step, judge whether it is valid in context: based on the problem statement and on all previously verified steps (not in isolation). A step can be wrong because it contradicts the problem, misuses an earlier result, or introduces a new error.
 4. Stop at the first erroneous step. Do not continue evaluating later steps once the first error is found.
 5. If all steps are correct, return -1.
 6. Be concise and precise. Do not rewrite the full solution.

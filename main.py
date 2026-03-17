@@ -35,13 +35,17 @@ def run_assessment(problem: str, steps: list[str], model: str | None = None) -> 
 
 
 def load_processbench(split: str = "gsm8k"):
-    """Load ProcessBench GSM8K from local JSON (run scripts/download_processbench.py first)."""
-    if split != "gsm8k":
-        raise ValueError("Only the GSM8K split is supported; use split='gsm8k'.")
-    path = Path(__file__).resolve().parent / "dataset" / "gsm8k.json"
+    """Load ProcessBench from local JSON. split in: gsm8k, math, olympiadbench, omnimath.
+    Download with: python scripts/download_processbench.py --split gsm8k
+    For math/olympiadbench/omnimath (400 random each): python scripts/download_processbench.py --split math olympiadbench omnimath
+    """
+    allowed = ("gsm8k", "math", "olympiadbench", "omnimath")
+    if split not in allowed:
+        raise ValueError(f"split must be one of {allowed}; got {split!r}.")
+    path = Path(__file__).resolve().parent / "dataset" / f"{split}.json"
     if not path.exists():
         raise FileNotFoundError(
-            f"ProcessBench GSM8K not found at {path}. Run: python scripts/download_processbench.py"
+            f"ProcessBench not found at {path}. Run: python scripts/download_processbench.py --split {split}"
         )
     with open(path, encoding="utf-8") as f:
         import json

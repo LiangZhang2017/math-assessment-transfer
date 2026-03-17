@@ -7,15 +7,20 @@ Studying whether mathematical problem-solving ability in LLMs transfers to step-
    - Copy `.env.example` to `.env` and fill in your Azure OpenAI values (or use the defaults already in `.env`).
    - `pip install -r requirements.txt` (or use the project venv: `python -m venv .venv && .venv/bin/pip install -r requirements.txt`).
 
-2. **ProcessBench dataset (GSM8K only)**
-   - Grade-school subset only. Download to JSON:  
-     `python scripts/download_processbench.py`  
-   - The repo’s **`dataset/gsm8k.json`** has **400 examples** with `id`, `generator`, `problem`, `steps`, `final_answer_correct`, `label`, and **`gold_answer`** (for problem-solving evaluation).
+2. **ProcessBench dataset**
+   - One `.json` per split in **`dataset/`**: `gsm8k.json`, `math.json`, `olympiadbench.json`, `omnimath.json`.
+   - **GSM8K** (400 items): use repo’s `dataset/gsm8k.json` or  
+     `python scripts/download_processbench.py --split gsm8k`
+   - **Math, OlympiadBench, Omnimath** (400 random each from HF):  
+     `python scripts/download_processbench.py --split math olympiadbench omnimath`  
+     Saves `dataset/math.json`, `dataset/olympiadbench.json`, `dataset/omnimath.json` with 400 randomly sampled questions each (seed 42). Optional: `--sample-size 400`, `--seed 42`.
+   - Each item has `id`, `generator`, `problem`, `steps`, `final_answer_correct`, `label`, and `gold_answer` (from `\boxed{}` in steps when possible).
 
 3. **Azure OpenAI**
    - Set in `.env`: `AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_VERSION`, `AZURE_OPENAI_MODEL`.
-   - **`AZURE_OPENAI_MODEL` must be the deployment name** in your Azure resource (e.g. `gpt-4`, `gpt-4o`), not the model family name—see Azure Portal → your resource → Deployments. If you get `404 DeploymentNotFound`, the value does not match any deployment name.
+   - **`AZURE_OPENAI_MODEL` must be the deployment name** in your Azure resource (e.g. `gpt-4`, `gpt-4o`), not the model family name—see Azure Portal → your resource → Deployments. If you get `404 DeploymentNotFound`, the value does not match any deployment name. For **GPT-5–level models** and example deployment names, see **docs/OUTPUT_AND_MODELS.md** (section “GPT-5–level models”).
    - To override for a single run, use `--model <deployment-name>` with the script (e.g. `--model gpt-4`).
+   - **Reasoning models (e.g. gpt-5-tp):** Set `AZURE_OPENAI_REASONING_MODELS=gpt-5-tp` (or comma-separated names) in `.env`. For these, the client sends only `max_completion_tokens`; no temperature, no `max_tokens`, no fallback to another model.
 
 ## Usage
 
@@ -32,7 +37,7 @@ Studying whether mathematical problem-solving ability in LLMs transfers to step-
 python scripts/run_problem_solving_eval.py --model gpt-4o
 ```
 
-Output: `output/<model>/solving/<id>.json` and `output/<model>/solving/summary.txt`. Optional: `--limit N`, **`--run <name>`** (saves to `.../solving/<name>/` so multiple runs use different folders, e.g. `--run run_1`).
+Output: `output/<model>/solving/<split>/<run?>/<id>.json` and `summary.txt`. Optional: **`--split gsm8k|math|olympiadbench|omnimath`** (default: gsm8k), `--limit N`, **`--run <name>`**.
 
 **Task 2 — Assessment** (model evaluates benchmark steps; we compare `llm_label` to human `label`):
 
@@ -40,19 +45,29 @@ Output: `output/<model>/solving/<id>.json` and `output/<model>/solving/summary.t
 python scripts/run_assessment_eval.py --model gpt-4o
 ```
 
-Output: `output/<model>/assessment/<id>.json` and `output/<model>/assessment/summary.txt`. Optional: `--limit N`, **`--run <name>`** (e.g. `--run run_1` → `.../assessment/run_1/`), `--out-dir <path>`.
+Output: `output/<model>/assessment/<split>/<run?>/<id>.json` and `summary.txt`. Optional: **`--split gsm8k|math|olympiadbench|omnimath`**, `--limit N`, **`--run <name>`**, `--out-dir <path>`.
 
 Use the same `--model` (e.g. `gpt-4`, `gpt-4o`) for both if you want one model for solving and assessment.
 
 **Multiple runs** — To keep separate runs in separate folders, pass **`--run <name>`** for both tasks. Each run writes to `output/<model>/solving/<name>/` and `output/<model>/assessment/<name>/`. Reruns with the same `--run` resume (skip existing files).
 
-Run both tasks for run_1, run_2, and run_3 in one command:
+Run **one task** for run_1, run_2, run_3 (tasks run separately):
 
 ```bash
-python scripts/run_multiple_runs.py --runs run_1 run_2 run_3 --model gpt-4
+# Solving only for run_1, run_2, run_3
+python scripts/run_multiple_runs.py --runs run_1 run_2 run_3 --task solving --model gpt-4
+
+# Assessment only for run_1, run_2, run_3
+python scripts/run_multiple_runs.py --runs run_1 run_2 run_3 --task assessment --model gpt-4
 ```
 
-For each run label, this runs problem-solving then assessment (optional: `--limit N`). Or run tasks individually:
+Run **both tasks** for the same runs (solving then assessment for each run):
+
+```bash
+python scripts/run_multiple_runs.py --runs run_1 run_2 run_3 --task both --model gpt-4
+```
+
+Use **`--split math`** (or olympiadbench, omnimath) to run on other datasets. Optional: `--limit N`. Or run tasks per run individually:
 
 ```bash
 # Single run
@@ -64,7 +79,15 @@ python scripts/run_problem_solving_eval.py --model gpt-4 --run run_2
 python scripts/run_assessment_eval.py --model gpt-4 --run run_2
 ```
 
-See docs/OUTPUT_AND_MODELS.md and docs/EXAMPLE_OUTPUTS.md.
+**Correctness across runs** — To get per-run correctness and mean percentage:
+
+```bash
+python scripts/aggregate_run_correctness.py --runs run_1 run_2 run_3 --model gpt-4 --split gsm8k
+```
+
+Use **`--split math`** (or olympiadbench, omnimath) when aggregating other datasets. Use `--task solving` or `--task assessment` to aggregate one task only.
+
+Results are organized under **`output/<model>/<task>/<split>/[<run>/]`** (e.g. `output/gpt-4/solving/math/run_1/`). See docs/OUTPUT_EXAMPLE.md for the full layout; docs/OUTPUT_AND_MODELS.md and docs/EXAMPLE_OUTPUTS.md for details.
 
 ## Evaluating outcomes
 

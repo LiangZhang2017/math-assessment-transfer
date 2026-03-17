@@ -40,20 +40,21 @@ def safe_filename(item_id: str) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Run LLM problem-solving and evaluate vs gold_answer. Writes one file per problem; rerun skips existing.")
     parser.add_argument("--limit", type=int, default=None, help="Run only first N items (default: all)")
-    parser.add_argument("--model", type=str, default=None, help="Model deployment name (default: from .env). Output written to output/<model>/solving/[run/]")
-    parser.add_argument("--run", type=str, default=None, help="Run label: save to output/<model>/solving/<run>/ so multiple runs use different folders (e.g. --run run_1)")
+    parser.add_argument("--split", type=str, default="gsm8k", help="Dataset split: gsm8k, math, olympiadbench, omnimath (default: gsm8k)")
+    parser.add_argument("--model", type=str, default=None, help="Model deployment name (default: from .env). Output written to output/<model>/solving/<split>/[run/]")
+    parser.add_argument("--run", type=str, default=None, help="Run label: save to .../solving/<split>/<run>/ (e.g. --run run_1)")
     parser.add_argument("--out-dir", type=str, default=None, help="Override output directory (default: output/<model>/solving/ or .../solving/<run>/)")
     parser.add_argument("--no-call", action="store_true", help="Skip API calls; only evaluate (use with --responses)")
     parser.add_argument("--responses", type=str, default=None, help="JSON file of raw LLM responses (same order as dataset)")
     args = parser.parse_args()
 
     model = args.model or config.AZURE_OPENAI_MODEL
-    base = ROOT / "output" / safe_dirname(model) / "solving"
+    base = ROOT / "output" / safe_dirname(model) / "solving" / args.split
     run_sub = safe_run_dir(args.run)
     out_dir = Path(args.out_dir) if args.out_dir else (base / run_sub if run_sub else base)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    dataset = load_processbench("gsm8k")
+    dataset = load_processbench(args.split)
     if args.limit:
         dataset = dataset[: args.limit]
     n = len(dataset)
