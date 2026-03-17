@@ -1,0 +1,25 @@
+# 7. Example item IDs for qualitative cases (run_1)
+
+[gpt-4, gsm8k]
+  solve_ok_assess_ok: ['gsm8k-311', 'gsm8k-254', 'gsm8k-346', 'gsm8k-203', 'gsm8k-350']
+  solve_ok_assess_bad: ['gsm8k-192', 'gsm8k-48', 'gsm8k-8', 'gsm8k-307', 'gsm8k-184']
+  solve_bad_assess_ok: ['gsm8k-238']
+  solve_bad_assess_bad: ['gsm8k-171', 'gsm8k-13', 'gsm8k-262', 'gsm8k-53', 'gsm8k-243']
+
+[gpt-4, math]
+  solve_ok_assess_ok: ['math-548', 'math-765', 'math-732', 'math-860', 'math-817']
+  solve_ok_assess_bad: ['math-509', 'math-682', 'math-840', 'math-944', 'math-991']
+  solve_bad_assess_ok: ['math-909', 'math-572', 'math-401', 'math-790', 'math-769']
+  solve_bad_assess_bad: ['math-374', 'math-231', 'math-289', 'math-525', 'math-23']
+
+[gpt-5-tp, gsm8k]
+  solve_ok_assess_ok: ['gsm8k-311', 'gsm8k-254', 'gsm8k-346', 'gsm8k-203', 'gsm8k-350']
+  solve_ok_assess_bad: ['gsm8k-192', 'gsm8k-48', 'gsm8k-8', 'gsm8k-307', 'gsm8k-184']
+  solve_bad_assess_ok: ['gsm8k-276', 'gsm8k-308']
+  solve_bad_assess_bad: ['gsm8k-13', 'gsm8k-262', 'gsm8k-264', 'gsm8k-19', 'gsm8k-195']
+
+[gpt-5-tp, math]
+  solve_ok_assess_ok: ['math-548', 'math-765', 'math-860', 'math-817', 'math-840']
+  solve_ok_assess_bad: ['math-509', 'math-732', 'math-944', 'math-991', 'math-883']
+  solve_bad_assess_ok: ['math-909', 'math-572', 'math-708', 'math-895', 'math-138']
+  solve_bad_assess_bad: ['math-374', 'math-231', 'math-289', 'math-525', 'math-23']

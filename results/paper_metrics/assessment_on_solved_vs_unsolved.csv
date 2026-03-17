@@ -1,0 +1,6 @@
+# 1. Assessment accuracy on Solved vs Unsolved items (mean over runs, then pooled)
+model,split,solved_correct_n,assess_acc_on_solved,unsolved_n,assess_acc_on_unsolved
+gpt-4,gsm8k,1139,48.55,61,6.56
+gpt-4,math,358,61.45,842,23.04
+gpt-5-tp,gsm8k,1169,50.21,31,16.13
+gpt-5-tp,math,366,70.49,834,24.58

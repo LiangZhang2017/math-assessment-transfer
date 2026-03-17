@@ -1,0 +1,6 @@
+# 4. 2x2 test: solve_correct x assess_correct. Chi2 stat, p (Fisher exact)
+model,split,chi2,p_fisher
+gpt-4,gsm8k,39.3817,5.3531e-12
+gpt-4,math,162.3221,1.8238e-36
+gpt-5-tp,gsm8k,12.7058,1.6649e-04
+gpt-5-tp,math,224.3342,8.2775e-51

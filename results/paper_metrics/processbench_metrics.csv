@@ -1,0 +1,6 @@
+# 2. ProcessBench-style metrics: accuracy on erroneous samples, on correct samples, F1 (harmonic mean)
+model,split,acc_err_present_pct,acc_no_error_pct,f1_pct,n_err_present,n_no_error
+gpt-4,gsm8k,4.67,91.19,8.88,621,579
+gpt-4,math,9.97,72.86,17.54,732,468
+gpt-5-tp,gsm8k,4.83,97.06,9.20,621,579
+gpt-5-tp,math,7.38,87.39,13.61,732,468

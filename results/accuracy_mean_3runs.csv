@@ -1,0 +1,9 @@
+task,model,split,mean_pct,std_pct,n_runs
+solving,gpt-4,gsm8k,94.92,0.38,3
+solving,gpt-4,math,29.83,0.63,3
+solving,gpt-5-tp,gsm8k,97.42,0.52,3
+solving,gpt-5-tp,math,30.50,0.43,3
+assessment,gpt-4,gsm8k,46.42,0.14,3
+assessment,gpt-4,math,34.50,1.09,3
+assessment,gpt-5-tp,gsm8k,49.33,0.58,3
+assessment,gpt-5-tp,math,38.58,0.63,3

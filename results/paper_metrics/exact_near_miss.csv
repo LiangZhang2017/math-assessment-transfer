@@ -1,0 +1,6 @@
+# 6. Assessment: exact match, off-by-1 step, off-by-2+
+model,split,exact,off_by_1,off_by_2plus,total,exact_pct,off1_pct,off2_pct
+gpt-4,gsm8k,557,426,216,1199,46.46,35.53,18.02
+gpt-4,math,414,435,337,1186,34.91,36.68,28.41
+gpt-5-tp,gsm8k,592,545,61,1198,49.42,45.49,5.09
+gpt-5-tp,math,463,615,76,1154,40.12,53.29,6.59

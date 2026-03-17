@@ -1,0 +1,74 @@
+% =============================================================================
+% Paste into your paper: Tables and text for (1) ProcessBench metrics,
+% (2) Solve--assess gap, (3) Qualitative case analysis.
+% Requires: \usepackage{booktabs}
+% Note: Replace \cite{processbench} with your ProcessBench citation.
+% Use in Results: Table 1 + "Result description (1)", Table 2 + "Result description (2)".
+% Use in Results/Discussion: "Qualitative case analysis" paragraph.
+% Use in Discussion: "Finding (1)", "Finding (2)", and "Together, the ProcessBench..." paragraph.
+% =============================================================================
+
+% -----------------------------------------------------------------------------
+% 1. PROCESSBENCH-STYLE METRICS (F1, error-present acc, no-error acc)
+% -----------------------------------------------------------------------------
+
+\begin{table}[t]
+\centering
+\caption{ProcessBench-style step-level assessment metrics: accuracy on error-present samples (human label $\neq -1$), on no-error samples (human label $= -1$), and their harmonic mean (F1). Pooled over three runs.}
+\label{tab:processbench-metrics}
+\begin{tabular}{llccc}
+\toprule
+Model & Dataset & Acc (error present) & Acc (no error) & F1 \\
+\midrule
+GPT-4  & GSM8K & 4.7 & 91.2 & 8.9 \\
+       & MATH  & 10.0 & 72.9 & 17.5 \\
+GPT-5  & GSM8K & 4.8 & 97.1 & 9.2 \\
+       & MATH  & 7.4 & 87.4 & 13.6 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Result description (1)
+We report step-level assessment using ProcessBench-style metrics \cite{processbench}: accuracy on samples where the reference labels an error (earliest error step $\geq 0$), accuracy on samples where all steps are correct (label $-1$), and their harmonic mean (F1). Table~\ref{tab:processbench-metrics} gives these by model and dataset. Overall accuracy is high on no-error samples (72--97\%) but low on error-present samples (5--10\%), so F1 remains low (9--18\%). GPT-5 attains higher no-error accuracy than GPT-4 on both datasets; error-present accuracy is similar across models and remains the main bottleneck.
+
+% Finding (1)
+F1 is the primary assessment metric here because it balances two failure modes: over-predicting errors (low no-error accuracy) and missing real errors (low error-present accuracy). The results show that models are much better at agreeing with ``all correct'' than at localizing the first erroneous step.
+
+% -----------------------------------------------------------------------------
+% 2. SOLVE--ASSESS GAP
+% -----------------------------------------------------------------------------
+
+\begin{table}[t]
+\centering
+\caption{Solve--assess gap: solving accuracy (final-answer correctness), overall assessment accuracy, assessment F1, and the gap (solving $-$ F1) in percentage points. Pooled over three runs.}
+\label{tab:solve-assess-gap}
+\begin{tabular}{llcccc}
+\toprule
+Model & Dataset & Solve (\%) & Assess overall (\%) & Assess F1 (\%) & Gap (solve $-$ F1) \\
+\midrule
+GPT-4  & GSM8K & 94.9 & 46.4 & 8.9 & 86.0 \\
+       & MATH  & 29.8 & 34.5 & 17.5 & 12.3 \\
+GPT-5  & GSM8K & 97.4 & 49.3 & 9.2 & 88.2 \\
+       & MATH  & 30.5 & 38.6 & 13.6 & 16.9 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% Result description (2)
+Table~\ref{tab:solve-assess-gap} reports solving accuracy (percentage of items for which the model produced a correct final answer), overall step-level assessment accuracy, assessment F1, and the gap between solving and assessment (solving $-$ F1). On GSM8K, solving accuracy is near ceiling (95--97\%) while assessment F1 stays below 10\%, yielding a gap of 86--88 percentage points. On MATH, solving accuracy is much lower (30\%); assessment F1 is 14--18\%, so the gap is 12--17 percentage points.
+
+% Finding (2)
+The large solve--assess gap, especially on GSM8K, indicates that step-level assessment is not simply ``solving in another form'': the same model that reaches high final-answer accuracy still struggles to localize the earliest error in a solution. On MATH, the smaller gap is partly due to lower solving performance, but assessment F1 remains modest, suggesting that critique of step-by-step reasoning poses distinct challenges.
+
+% -----------------------------------------------------------------------------
+% 3. QUALITATIVE CASE ANALYSIS
+% -----------------------------------------------------------------------------
+
+We illustrate the four outcome cells (solve correct/incorrect $\times$ assess correct/incorrect) with representative examples from run\_1. The two most informative cases are: (i)~\textbf{solve correct, assess incorrect}---the model solves the problem but fails to correctly identify the earliest error step; and (ii)~\textbf{solve incorrect, assess correct}---the model fails to solve the problem yet correctly assesses a (possibly correct) solution. These show that solving competence does not guarantee critique competence, and that assessment can draw on partially independent skills.
+
+\textbf{Solve correct, assess incorrect.} On GSM8K item gsm8k-192 (Christina's calendar: ``how many good days were left?''), the human label marks the first error at step 2; the model (GPT-4) predicted the first error at step 5 and gave a rationale about step 5 miscounting good days. Thus the model solved the problem (correct final answer in its own solution) but mislocalized the error when critiquing the benchmark solution. On MATH item math-509 ($\tan 315^\circ$), the human label marks an error at step 2; the model pointed to step 3, citing a conceptual error about quadrant signs. In both cases, the model detects that something is wrong but identifies the wrong step, illustrating that solving success does not entail precise error localization.
+
+\textbf{Solve incorrect, assess correct.} On GSM8K item gsm8k-238 (Charisma's meditation/yoga time over 4 weeks), the benchmark solution has no error (human label $-1$). GPT-4's own solution to this problem was incorrect (solve incorrect), but when assessing the given solution it correctly predicted $-1$ (all steps correct). Similarly, on MATH item math-572 (value of $1/a + 1/b$ given $a+b$ and $a^3+b^3$), the benchmark solution is fully correct; GPT-4 failed to solve the problem yet correctly assessed the solution as having no error. These cases suggest that assessment can succeed even when the model's generative solution is wrong, consistent with partially independent critique abilities.
+
+% Discussion (1 + 2 + 3)
+Together, the ProcessBench metrics, the solve--assess gap, and the qualitative cases support three points. First, F1 is a more informative assessment metric than overall accuracy because it reflects both error detection and the tendency to over- or under-predict errors. Second, the large gap between solving and assessment (especially on GSM8K) implies that strong final-answer performance does not automatically yield strong step-level critique. Third, the mixed outcomes (solve correct but assess wrong; solve wrong but assess correct) indicate that transfer from problem-solving to assessment is real but incomplete: solving helps assessment on average (as in the solved-vs.-unsolved analysis), yet assessment relies on skills that are not fully redundant with solving.

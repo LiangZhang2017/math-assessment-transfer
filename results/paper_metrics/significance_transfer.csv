@@ -1,0 +1,6 @@
+# 4b. Transfer effect: difference in assessment acc (solved_correct - solved_incorrect), 95% CI, p-values
+model,split,diff_pct,ci_lower,ci_upper,p_two_proportion,p_fisher
+gpt-4,gsm8k,41.99,35.14,48.85,0.0000e+00,5.3531e-12
+gpt-4,math,38.41,32.62,44.20,0.0000e+00,1.8238e-36
+gpt-5-tp,gsm8k,34.08,20.82,47.35,4.7086e-07,1.6649e-04
+gpt-5-tp,math,45.91,40.40,51.42,0.0000e+00,8.2775e-51
