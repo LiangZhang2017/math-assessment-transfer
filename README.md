@@ -93,3 +93,27 @@ Results are organized under **`output/<model>/<task>/<split>/[<run>/]`** (e.g. `
 
 - **Problem-solving**: Correctness is computed by comparing the model’s extracted final answer to **`gold_answer`** (see `evaluate_problem_solving.py`).
 - **Assessment**: Ground truth is each row’s **`label`**. We compare the model’s **`llm_label`** to it and store **`correctness_llm_label`** in each assessment output JSON.
+
+## Results and figures
+
+- Aggregated 3-run summary figures are written to `results/figures/`:
+  - `solving.png`
+  - `assessment.png`
+  - `solving_and_assessment.png` (dual-panel figure)
+- Aggregated tables are written to `results/`, including `accuracy_mean_3runs.csv`.
+- Paper-oriented metrics and plots are written to `results/paper_metrics/`, including:
+  - `assessment_on_solved_vs_unsolved.csv`
+  - `assessment_on_solved_vs_unsolved.png`
+  - `processbench_metrics.csv`
+  - `solve_assess_gap.csv`
+  - `statistical_test_2x2.csv`
+  - `significance_transfer.csv`
+  - `exact_near_miss.csv`
+  - `qualitative_case_examples.txt`
+
+Regenerate these artifacts from current `output/`:
+
+```bash
+python scripts/plot_results.py
+python scripts/analyze_paper_metrics.py
+```

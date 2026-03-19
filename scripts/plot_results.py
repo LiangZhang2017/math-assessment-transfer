@@ -143,11 +143,11 @@ def plot_solving_and_assessment_dual(
     means_solve, _ = _compute_means_stds(solving_data)
     means_assess, _ = _compute_means_stds(assessment_data)
 
-    fig, axes = plt.subplots(1, 2, figsize=(8, 4), layout="constrained")
+    fig, axes = plt.subplots(1, 2, figsize=(8, 3.0), layout="constrained")
     for ax, means, title in zip(
         axes,
         [means_solve, means_assess],
-        ["Solving", "Assessment"],
+        ["Problem-solving", "Step-level Assessment"],
     ):
         bars1 = ax.bar(x - width / 2, means["gpt-4"], width, label="GPT-4")
         bars2 = ax.bar(x + width / 2, means["gpt-5-tp"], width, label="GPT-5")

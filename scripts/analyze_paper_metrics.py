@@ -280,7 +280,7 @@ def main() -> int:
     try:
         import numpy as np
         import matplotlib.pyplot as plt
-        fig, axes = plt.subplots(1, 2, figsize=(8, 4), layout="constrained")
+        fig, axes = plt.subplots(1, 2, figsize=(8, 3.0), layout="constrained")
         for ax, split in zip(axes, SPLITS):
             x = np.arange(2)  # Solved correctly | Solved incorrectly
             width = 0.35

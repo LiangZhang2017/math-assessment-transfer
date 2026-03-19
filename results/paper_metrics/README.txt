@@ -4,6 +4,5 @@ Paper metrics summary
 2. processbench_metrics.csv — Acc on error-present samples, on no-error samples, F1 (harmonic mean).
 3. solve_assess_gap.csv — Solving accuracy minus assessment (overall and F1).
 4. statistical_test_2x2.csv — Chi2 and Fisher p for (solve correct x assess correct).
-4b. significance_transfer.csv — Difference (solved − unsolved) in assessment acc (%), 95% CI, two-proportion z-test p, Fisher p.
 5. exact_near_miss.csv — Exact step match, off-by-1, off-by-2+.
 6. qualitative_case_examples.txt — Example IDs for the four (solve, assess) outcome cells.
